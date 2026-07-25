@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaGithub,
@@ -7,11 +7,8 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { AdminContext } from "../context/AdminContext";
 
 function Contact() {
-  const { sendMessage } = useContext(AdminContext);
-
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -33,22 +30,43 @@ function Contact() {
 
     setLoading(true);
 
-    const result = await sendMessage(formData);
+    const data = {
+      access_key: import.meta.env.VITE_WEB3FORMS_KEY,
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+    };
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Message Sent Successfully!");
+
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        alert(result.message || "Failed to send message.");
+      }
+    } catch (error) {
+      alert("Something went wrong.");
+    }
 
     setLoading(false);
-
-    if (result.success) {
-      alert("Message Sent Successfully!");
-
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-    } else {
-      alert(result.message);
-    }
   };
 
   return (
@@ -58,7 +76,6 @@ function Contact() {
     >
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* Heading */}
         <motion.h2
           initial={{ opacity: 0, y: -40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -74,7 +91,6 @@ function Contact() {
 
         <div className="grid lg:grid-cols-2 gap-14">
 
-          {/* Left Side */}
           <motion.div
             initial={{ opacity: 0, x: -80 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -133,8 +149,7 @@ function Contact() {
             </div>
           </motion.div>
 
-          {/* Right Side */}
-          <motion.form
+                    <motion.form
             initial={{ opacity: 0, x: 80 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
