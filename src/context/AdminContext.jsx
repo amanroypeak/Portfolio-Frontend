@@ -10,6 +10,9 @@ const AdminContextProvider = ({ children }) => {
   const [skills, setSkills] = useState([]);
   const [projects, setProjects] = useState([]);
 
+  const [loadingSkills, setLoadingSkills] = useState(true);
+  const [loadingProjects, setLoadingProjects] = useState(true);
+
   useEffect(() => {
     if (token) {
       setIsAdmin(true);
@@ -56,17 +59,21 @@ const AdminContextProvider = ({ children }) => {
 
   // ================= GET SKILLS =================
 
-  const getSkills = async () => {
-    try {
-      const { data } = await axiosInstance.get("/skills");
+ const getSkills = async () => {
+  try {
+    setLoadingSkills(true);
 
-      if (data.success) {
-        setSkills(data.skills);
-      }
-    } catch (error) {
-      console.log(error);
+    const { data } = await axiosInstance.get("/skills");
+
+    if (data.success) {
+      setSkills(data.skills);
     }
-  };
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoadingSkills(false);
+  }
+};
 
   const addSkill = async (skillData) => {
   try {
@@ -121,16 +128,20 @@ const deleteSkill = async (id) => {
   // ================= GET PROJECTS =================
 
   const getProjects = async () => {
-    try {
-      const { data } = await axiosInstance.get("/projects");
+  try {
+    setLoadingProjects(true);
 
-      if (data.success) {
-        setProjects(data.projects);
-      }
-    } catch (error) {
-      console.log(error);
+    const { data } = await axiosInstance.get("/projects");
+
+    if (data.success) {
+      setProjects(data.projects);
     }
-  };
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoadingProjects(false);
+  }
+};
 
   const addProject = async (projectData) => {
   try {
@@ -217,6 +228,9 @@ const sendMessage = async (formData) => {
     addProject,
     deleteProject,
     sendMessage,
+
+    loadingSkills,
+    loadingProjects,
   };
 
   return (

@@ -10,7 +10,7 @@ function Projects() {
   const {
     projects,
     isAdmin,
-    deleteProject,
+    deleteProject,loadingProjects
   } = useContext(AdminContext);
 
   const [openModal, setOpenModal] = useState(false);
@@ -38,6 +38,72 @@ function Projects() {
       alert(result.message);
     }
   };
+
+  if (loadingProjects) {
+  return (
+    <>
+      <section
+        id="projects"
+        className="min-h-screen bg-[#0f172a] text-white py-24 scroll-mt-20"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+
+          <motion.h2
+            initial={{ opacity: 0, y: -40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-5xl font-bold text-center mb-4"
+          >
+            My <span className="text-cyan-400">Projects</span>
+          </motion.h2>
+
+          <p className="text-center text-gray-400 mb-14">
+            Some of the projects I've built using modern web technologies.
+          </p>
+
+          <div className="flex justify-end mb-10">
+            <button
+              disabled
+              className="flex items-center gap-2 bg-cyan-500 px-5 py-2 rounded-lg font-semibold opacity-60 cursor-not-allowed"
+            >
+              <FaPlus />
+              Add Project
+            </button>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-slate-800 rounded-2xl shadow-lg p-6 min-h-[380px] animate-pulse"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-40 h-7 bg-slate-700 rounded"></div>
+
+                  <div className="w-10 h-10 bg-slate-700 rounded-lg"></div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="w-full h-4 bg-slate-700 rounded"></div>
+                  <div className="w-full h-4 bg-slate-700 rounded"></div>
+                  <div className="w-4/5 h-4 bg-slate-700 rounded"></div>
+                </div>
+
+                <div className="mt-20 w-28 h-11 bg-slate-700 rounded-lg"></div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      <AddProjectModal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+      />
+    </>
+  );
+}
 
   return (
     <>

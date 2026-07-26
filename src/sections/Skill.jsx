@@ -24,7 +24,7 @@ import { AdminContext } from "../context/AdminContext";
 import AddSkillModal from "../components/AddSkillModal";
 
 function Skill() {
-  const { skills, isAdmin, deleteSkill } = useContext(AdminContext);
+  const { skills, isAdmin, deleteSkill, loadingSkills } = useContext(AdminContext);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -66,6 +66,66 @@ function Skill() {
       alert(result.message);
     }
   };
+
+   if (loadingSkills) {
+    return (
+      <>
+        <section
+          id="skills"
+          className="min-h-screen bg-[#0f172a] text-white py-24 scroll-mt-20"
+        >
+          <div className="max-w-7xl mx-auto px-6">
+
+            <motion.h2
+              initial={{ opacity: 0, y: -40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl font-bold text-center mb-4"
+            >
+              My <span className="text-cyan-400">Skills</span>
+            </motion.h2>
+
+            <p className="text-center text-gray-400 mb-14">
+              Technologies and tools I use to build modern web applications.
+            </p>
+
+            <div className="flex justify-between items-center mb-10">
+              <h3 className="text-3xl font-semibold text-cyan-400">
+                Skills
+              </h3>
+
+              <button
+                disabled
+                className="bg-cyan-500 px-5 py-2 rounded-lg font-medium opacity-60 cursor-not-allowed"
+              >
+                + Add Skill
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-slate-800 rounded-2xl p-8 shadow-lg animate-pulse"
+                >
+                  <div className="w-16 h-16 rounded-full bg-slate-700 mx-auto"></div>
+
+                  <div className="w-24 h-5 bg-slate-700 rounded mx-auto mt-6"></div>
+                </div>
+              ))}
+
+            </div>
+          </div>
+        </section>
+
+        <AddSkillModal
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+        />
+      </>
+    );
+  }
 
   return (
     <>
